@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "logdriver"
+version = "0.1.0"
+dependencies = [
+    "Click>=7.0,<=8.0.4"
+]
+readme = "README.md"
+requires-python = ">=3.6"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Steve King"},
+    {email = "steve@steveking.site"}
+]
+keywords = ["logging", "logger", "microservice", "cli"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: System :: Distributed Computing",
+    "Topic :: System :: Logging"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "flake8",
+    "black",
+    "tox",
+    "coverage",
+    "build"
+]
+
+[project.urls]
+homepage = "https://github.com/sjking/logdriver"
+
+[tool.setuptools.packages.find]
+include = ["logdriver*"]
+exclude = ["tests*"]
+
+[project.scripts]
+logdriver = "logdriver.cli:main"
+
