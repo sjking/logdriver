@@ -4,7 +4,7 @@ import logging
 import sys
 from typing import Optional, Sequence
 
-import logdriver.server
+import flumed.server
 
 DESCRIPTION = """
 Run a TCP socker server for receiving and handling pickled Python LogRecord objects
@@ -72,18 +72,18 @@ def parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
 def main():
     args = parse_args(sys.argv[1:])
 
-    system_logger = logging.getLogger("logdriver.system")
+    system_logger = logging.getLogger("flumed.system")
     system_handler = logging.StreamHandler(stream=sys.stderr)
     system_logger.addHandler(system_handler)
 
-    system_logger.warning("Started logdriver logging socket server")
+    system_logger.warning("Started flumed logging socket server")
     system_logger.warning(f"Listening for logs on {args.host}:{args.port}")
     system_logger.warning("Press CTRL+C to quit")
 
-    user_logger = logging.getLogger("logdriver.user")
+    user_logger = logging.getLogger("flumed.user")
     user_handler = logging.StreamHandler(stream=sys.stdout)
     user_logger.addHandler(user_handler)
 
-    logdriver.server.main(args.host, args.port, system_logger, user_logger)
+    flumed.server.main(args.host, args.port, system_logger, user_logger)
 
     system_logger.warning("Bye!")

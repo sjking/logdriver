@@ -23,9 +23,10 @@ clean: clean-build clean-pyc clean-test clean-dev ## remove all build, test, cov
 
 clean-build: ## remove build artifacts
 	rm -rf dist/
-	rm -rf logdriver.egg-info/
+	rm -rf *.egg-info/
 
 clean-dev:
+	touch ${REQUIREMENTS_FILE}
 	rm ${REQUIREMENTS_FILE}
 
 clean-pyc: ## remove Python file artifacts
@@ -41,10 +42,10 @@ clean-test: ## remove test and coverage artifacts
 	rm -rf .pytest_cache
 
 lint/flake8: install ## check style with flake8
-	flake8 logdriver tests
+	flake8 flumed tests
 
 lint/black: install ## check style with black
-	black --check logdriver tests
+	black --check flumed tests
 
 lint: lint/flake8 lint/black ## check style
 
@@ -55,7 +56,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: install ## check code coverage quickly with the default Python
-	coverage run --source logdriver -m pytest
+	coverage run --source flumed -m pytest
 	coverage report -m
 	coverage html
 
@@ -66,7 +67,7 @@ dist: clean ## builds source and wheel package in dist directory
 	python -m build
 
 install: ## install the package to the active Python's site-packages in editable mode
-	@pip list | grep logdriver > /dev/null || pip install -e .
+	@pip list | grep flumed > /dev/null || pip install -e .
 
 dev: ## install the development dependencies
 	ls ${REQUIREMENTS_FILE} 2> /dev/null || pip-compile --extra dev pyproject.toml --output-file ${REQUIREMENTS_FILE}

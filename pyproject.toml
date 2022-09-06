@@ -3,11 +3,11 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "logdriver"
+name = "flumed"
 version = "0.1.0"
 readme = "README.md"
 requires-python = ">=3.6"
-license = {file = "LICENSE"}
+license = {text = "MIT License"}
 authors = [
     {name = "Steve King"},
     {email = "steve@steveking.site"}
@@ -37,11 +37,11 @@ dev = [
 ]
 
 [project.urls]
-homepage = "https://github.com/sjking/logdriver"
+homepage = "https://github.com/sjking/flumed"
 
 [tool.setuptools.packages.find]
-include = ["logdriver*"]
+include = ["flumed*"]
 exclude = ["tests*"]
 
 [project.scripts]
-logdriver = "logdriver.cli:main"
+flumed = "flumed.cli:main"
