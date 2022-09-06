@@ -34,7 +34,7 @@ dev = [
     "tox",
     "coverage",
     "build",
-    "pip-compile"
+    "pip-tools"
 ]
 
 [project.urls]

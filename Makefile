@@ -70,7 +70,7 @@ install: ## install the package to the active Python's site-packages in editable
 	@pip list | grep flumed > /dev/null || pip install -e .
 
 dev-preflight:
-	pip install pip-compile
+	pip install pip-tools
 
 dev: dev-preflight ## install the development dependencies
 	ls ${REQUIREMENTS_FILE} 2> /dev/null || pip-compile --extra dev pyproject.toml --output-file ${REQUIREMENTS_FILE}
