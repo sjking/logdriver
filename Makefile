@@ -69,7 +69,10 @@ dist: clean ## builds source and wheel package in dist directory
 install: ## install the package to the active Python's site-packages in editable mode
 	@pip list | grep flumed > /dev/null || pip install -e .
 
-dev: ## install the development dependencies
+dev-preflight:
+	pip install pip-compile
+
+dev: dev-preflight ## install the development dependencies
 	ls ${REQUIREMENTS_FILE} 2> /dev/null || pip-compile --extra dev pyproject.toml --output-file ${REQUIREMENTS_FILE}
 	pip install -r ${REQUIREMENTS_FILE} 2> /dev/null
 	echo "Installed requirements dev"
