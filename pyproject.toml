@@ -5,9 +5,6 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "logdriver"
 version = "0.1.0"
-dependencies = [
-    "Click>=7.0,<=8.0.4"
-]
 readme = "README.md"
 requires-python = ">=3.6"
 license = {file = "LICENSE"}
@@ -48,4 +45,3 @@ exclude = ["tests*"]
 
 [project.scripts]
 logdriver = "logdriver.cli:main"
-
