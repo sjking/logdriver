@@ -42,10 +42,10 @@ clean-test: ## remove test and coverage artifacts
 	rm -rf .pytest_cache
 
 lint/flake8: install ## check style with flake8
-	flake8 flumed tests
+	flake8 logdriver tests
 
 lint/black: install ## check style with black
-	black --check flumed tests
+	black --check logdriver tests
 
 lint: lint/flake8 lint/black ## check style
 
@@ -55,8 +55,8 @@ test: install ## run tests quickly with the default Python
 test-all: ## run tests on every Python version with tox
 	tox
 
-coverage: install ## check code coverage quickly with the default Python
-	coverage run --source flumed -m pytest
+coverage: ## check code coverage quickly with the default Python
+	coverage run --source logdriver -m pytest
 	coverage report -m
 	coverage html
 
@@ -67,7 +67,7 @@ dist: clean ## builds source and wheel package in dist directory
 	python -m build
 
 install: ## install the package to the active Python's site-packages in editable mode
-	@pip list | grep flumed > /dev/null || pip install -e .
+	@pip list | grep logdriver > /dev/null || pip install -e .
 
 dev-preflight:
 	pip install pip-tools

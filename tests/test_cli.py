@@ -4,7 +4,7 @@ import pytest
 import argparse
 import logging
 
-from flumed.cli import parse_args, HOST_DEFAULT, PORT_DEFAULT
+from logdriver.cli import parse_args, HOST_DEFAULT, PORT_DEFAULT
 
 
 def make_namespace(
