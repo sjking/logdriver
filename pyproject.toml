@@ -4,7 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "logdriver"
-version = "0.1.1"
+description = "Run a socket server for application logging"
+version = "0.1.2"
 readme = "README.md"
 requires-python = ">=3.6"
 license = {text = "MIT License"}
