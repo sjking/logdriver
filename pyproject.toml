@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "logdriver"
-version = "0.1.0"
+version = "0.1.1"
 readme = "README.md"
 requires-python = ">=3.6"
 license = {text = "MIT License"}
@@ -41,7 +41,6 @@ dev = [
 homepage = "https://github.com/sjking/logdriver"
 
 [tool.setuptools.packages.find]
-include = ["logdriver*"]
 exclude = ["tests*"]
 
 [project.scripts]
