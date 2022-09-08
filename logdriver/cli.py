@@ -27,6 +27,18 @@ def port_range(port: str, min_val=MIN_PORT, max_val=MAX_PORT):
     )
 
 
+def log_level(level_str: str) -> int:
+    if level_str == "DEBUG":
+        return logging.DEBUG
+    if level_str == "INFO":
+        return logging.INFO
+    if level_str == "WARNING":
+        return logging.WARNING
+    if level_str == "ERROR":
+        return logging.ERROR
+    raise argparse.ArgumentTypeError(f"Invalid logging level: {level_str}")
+
+
 def parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument(
@@ -50,6 +62,14 @@ def parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
         action="store_true",
         help="log debug messages to stderr",
     )
+    parser.add_argument(
+        "-L",
+        "--level",
+        type=log_level,
+        default=logging.WARNING,
+        metavar="DEBUG, INFO, WARNING, ERROR (default WARNING)",
+        help="the logging level",
+    )
 
     return parser.parse_args(args)
 
@@ -70,6 +90,7 @@ def main():
 
     user_logger = logging.getLogger("logdriver.user")
     user_handler = logging.StreamHandler(stream=sys.stdout)
+    user_logger.setLevel(args.level)
     user_logger.addHandler(user_handler)
 
     logdriver.server.main(args.host, args.port, system_logger, user_logger)

@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 import pytest
@@ -7,9 +8,9 @@ from logdriver.cli import parse_args, HOST_DEFAULT, PORT_DEFAULT
 
 
 def make_namespace(
-    port: int = PORT_DEFAULT, host: str = HOST_DEFAULT, debug: bool = False
+    port: int = PORT_DEFAULT, host: str = HOST_DEFAULT, level: int = logging.WARNING, debug: bool = False
 ) -> argparse.Namespace:
-    return argparse.Namespace(port=port, host=host, debug=debug)
+    return argparse.Namespace(port=port, host=host, level=level, debug=debug)
 
 
 def test_parse_default():
@@ -70,6 +71,39 @@ def test_parse_host(args, namespace):
     ],
 )
 def test_parse_host_error(capsys, args: List[str], error_message: str):
+    with pytest.raises(SystemExit):
+        parse_args(args)
+    captured = capsys.readouterr()
+    assert error_message in captured.err
+
+
+@pytest.mark.parametrize(
+    "args,namespace",
+    [
+        (["-L", "INFO"], make_namespace(level=logging.INFO)),
+        (["-L", "DEBUG"], make_namespace(level=logging.DEBUG)),
+        (["-L", "WARNING"], make_namespace(level=logging.WARNING)),
+        (["-L", "ERROR"], make_namespace(level=logging.ERROR)),
+        (["--level", "INFO"], make_namespace(level=logging.INFO)),
+        (["--level", "DEBUG"], make_namespace(level=logging.DEBUG)),
+        (["--level", "WARNING"], make_namespace(level=logging.WARNING)),
+        (["--level", "ERROR"], make_namespace(level=logging.ERROR)),
+    ],
+)
+def test_parse_level(args, namespace):
+    assert parse_args(args) == namespace
+
+
+@pytest.mark.parametrize(
+    "args,error_message",
+    [
+        (["-L", "NA"], "Invalid logging level"),
+        (["-L"], "expected one argument"),
+        (["--level", "NA"], "Invalid logging level"),
+        (["--level"], "expected one argument"),
+    ],
+)
+def test_parse_level_error(capsys, args: List[str], error_message: str):
     with pytest.raises(SystemExit):
         parse_args(args)
     captured = capsys.readouterr()
