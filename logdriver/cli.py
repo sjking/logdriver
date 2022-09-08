@@ -1,6 +1,9 @@
 import argparse
+import json
 import os
 import logging
+import logging.config
+import logging.handlers
 import sys
 from typing import Optional, Sequence
 
@@ -70,6 +73,24 @@ def parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
         metavar="DEBUG, INFO, WARNING, ERROR (default WARNING)",
         help="the logging level",
     )
+    parser.add_argument(
+        "-f",
+        "--file",
+        type=argparse.FileType("r"),
+        help="configuration dictionary schema describing logging configuration in json or yaml",
+    )
+    parser.add_argument(
+        "--allow-reuse-address",
+        dest="allow_reuse_address",
+        action="store_true",
+        help="allow socket to reuse address",
+    )
+    parser.add_argument(
+        "--logger-name",
+        dest="logger_name",
+        default="logdriver",
+        help="the name of the logger",
+    )
 
     return parser.parse_args(args)
 
@@ -88,11 +109,18 @@ def main():
     system_logger.warning(f"Listening for logs on {args.host}:{args.port}")
     system_logger.warning("Press CTRL+C to quit")
 
-    user_logger = logging.getLogger("logdriver.user")
-    user_handler = logging.StreamHandler(stream=sys.stdout)
-    user_logger.setLevel(args.level)
-    user_logger.addHandler(user_handler)
+    if args.file:
+        logging.config.dictConfig(json.loads(args.file.read()))
+        system_logger.debug(f"Using dictionary config {args.file.name}")
+        user_logger = logging.getLogger(args.logger_name)
+    else:
+        user_logger = logging.getLogger(args.logger_name)
+        user_handler = logging.StreamHandler(stream=sys.stdout)
+        user_handler.setLevel(args.level)
+        user_logger.addHandler(user_handler)
 
-    logdriver.server.main(args.host, args.port, system_logger, user_logger)
+    logdriver.server.main(
+        args.host, args.port, system_logger, user_logger, args.allow_reuse_address
+    )
 
     system_logger.warning("Bye!")

@@ -47,8 +47,11 @@ class LogRecordSocketReceiver(socketserver.ThreadingTCPServer):
         stop: Event,
         host: str,
         port: int,
+        allow_reuse_address: bool = False,
         handler=LogRecordStreamHandler,
     ):
+        if allow_reuse_address:
+            socketserver.TCPServer.allow_reuse_address = True
         socketserver.ThreadingTCPServer.__init__(self, (host, port), handler)
         self.queue = q
         self.stop = stop
@@ -72,7 +75,13 @@ class FileLogWriter(Thread):
                 self.queue.task_done()
 
 
-def main(host: str, port: int, system_logger: Logger, user_logger: Logger):
+def main(
+    host: str,
+    port: int,
+    system_logger: Logger,
+    user_logger: Logger,
+    allow_reuse_address: bool = False,
+):
     q = Queue()
     stop = Event()
     log_writer = FileLogWriter(q, stop, user_logger)
@@ -85,7 +94,13 @@ def main(host: str, port: int, system_logger: Logger, user_logger: Logger):
         log_writer.join()
 
     try:
-        tcp_server = LogRecordSocketReceiver(host=host, port=port, q=q, stop=stop)
+        tcp_server = LogRecordSocketReceiver(
+            host=host,
+            port=port,
+            q=q,
+            stop=stop,
+            allow_reuse_address=allow_reuse_address,
+        )
     except OSError:
         stop_log_writer()
         raise
