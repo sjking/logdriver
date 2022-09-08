@@ -13,7 +13,6 @@ MIN_PORT = 1024
 MAX_PORT = 65535
 PORT_DEFAULT = os.environ.get("LOGDRIVER_DEFAULT_PORT", 9079)
 HOST_DEFAULT = "localhost"
-LOG_LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
 def port_range(port: str, min_val=MIN_PORT, max_val=MAX_PORT):
@@ -26,18 +25,6 @@ def port_range(port: str, min_val=MIN_PORT, max_val=MAX_PORT):
     raise argparse.ArgumentTypeError(
         f"Port needs to be an integer in the range {min_val}-{max_val}"
     )
-
-
-def log_level(level_str: str) -> int:
-    if level_str == "DEBUG":
-        return logging.DEBUG
-    if level_str == "INFO":
-        return logging.INFO
-    if level_str == "WARNING":
-        return logging.WARNING
-    if level_str == "ERROR":
-        return logging.ERROR
-    raise argparse.ArgumentTypeError(f"Invalid logging level: {level_str}")
 
 
 def parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
@@ -58,12 +45,10 @@ def parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
         default=HOST_DEFAULT,
     )
     parser.add_argument(
-        "-L",
-        "--level",
-        type=log_level,
-        default=logging.WARNING,
-        metavar="DEBUG, INFO, WARNING, ERROR (default WARNING)",
-        help="the logging level",
+        "-D",
+        "--debug",
+        action="store_true",
+        help="log debug messages to stderr",
     )
 
     return parser.parse_args(args)
@@ -75,8 +60,11 @@ def main():
     system_logger = logging.getLogger("logdriver.system")
     system_handler = logging.StreamHandler(stream=sys.stderr)
     system_logger.addHandler(system_handler)
+    if args.debug:
+        system_logger.setLevel(logging.DEBUG)
 
     system_logger.warning("Started logdriver logging socket server")
+    system_logger.debug("Debug is ON")
     system_logger.warning(f"Listening for logs on {args.host}:{args.port}")
     system_logger.warning("Press CTRL+C to quit")
 

@@ -23,9 +23,7 @@ class LogRecordStreamHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
         self.request.settimeout(1)
-        while True:
-            if self.should_stop():
-                break
+        while not self.should_stop():
             try:
                 chunk = self.connection.recv(4)
             except socket.timeout:
@@ -80,7 +78,7 @@ def main(host: str, port: int, system_logger: Logger, user_logger: Logger):
     log_writer = FileLogWriter(q, stop, user_logger)
     log_writer.start()
 
-    system_logger.warning("Starting TCP server")
+    system_logger.debug("Starting TCP server")
 
     def stop_log_writer():
         stop.set()
@@ -110,4 +108,4 @@ def main(host: str, port: int, system_logger: Logger, user_logger: Logger):
     while not stop.is_set():
         sleep(1)
 
-    system_logger.warning("Shutting down TCP server")
+    system_logger.debug("Shutting down TCP server")

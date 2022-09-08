@@ -2,15 +2,14 @@ from typing import List
 
 import pytest
 import argparse
-import logging
 
 from logdriver.cli import parse_args, HOST_DEFAULT, PORT_DEFAULT
 
 
 def make_namespace(
-    port: int = PORT_DEFAULT, host: str = HOST_DEFAULT, level: int = logging.WARNING
+    port: int = PORT_DEFAULT, host: str = HOST_DEFAULT, debug: bool = False
 ) -> argparse.Namespace:
-    return argparse.Namespace(port=port, host=host, level=level)
+    return argparse.Namespace(port=port, host=host, debug=debug)
 
 
 def test_parse_default():
@@ -79,32 +78,15 @@ def test_parse_host_error(capsys, args: List[str], error_message: str):
 
 @pytest.mark.parametrize(
     "args,namespace",
-    [
-        (["-L", "INFO"], make_namespace(level=logging.INFO)),
-        (["-L", "DEBUG"], make_namespace(level=logging.DEBUG)),
-        (["-L", "WARNING"], make_namespace(level=logging.WARNING)),
-        (["-L", "ERROR"], make_namespace(level=logging.ERROR)),
-        (["--level", "INFO"], make_namespace(level=logging.INFO)),
-        (["--level", "DEBUG"], make_namespace(level=logging.DEBUG)),
-        (["--level", "WARNING"], make_namespace(level=logging.WARNING)),
-        (["--level", "ERROR"], make_namespace(level=logging.ERROR)),
-    ],
+    [(["-D"], make_namespace(debug=True)), (["--debug"], make_namespace(debug=True))],
 )
-def test_parse_level(args, namespace):
+def test_parse_debug(args, namespace):
     assert parse_args(args) == namespace
 
 
-@pytest.mark.parametrize(
-    "args,error_message",
-    [
-        (["-L", "NA"], "Invalid logging level"),
-        (["-L"], "expected one argument"),
-        (["--level", "NA"], "Invalid logging level"),
-        (["--level"], "expected one argument"),
-    ],
-)
-def test_parse_level_error(capsys, args: List[str], error_message: str):
+@pytest.mark.parametrize("args,message", [(["-h"], "usage"), (["--help"], "usage")])
+def test_help(capsys, args, message):
     with pytest.raises(SystemExit):
         parse_args(args)
     captured = capsys.readouterr()
-    assert error_message in captured.err
+    assert message in captured.out
