@@ -8,9 +8,21 @@ from logdriver.cli import parse_args, HOST_DEFAULT, PORT_DEFAULT
 
 
 def make_namespace(
-    port: int = PORT_DEFAULT, host: str = HOST_DEFAULT, level: int = logging.WARNING, debug: bool = False
+    port: int = PORT_DEFAULT,
+    host: str = HOST_DEFAULT,
+    level: int = logging.WARNING,
+    debug: bool = False,
+    file=None,
+    allow_reuse_address=False,
+    logger_name="logdriver"
 ) -> argparse.Namespace:
-    return argparse.Namespace(port=port, host=host, level=level, debug=debug)
+    return argparse.Namespace(port=port,
+                              host=host,
+                              level=level,
+                              debug=debug,
+                              file=file,
+                              allow_reuse_address=allow_reuse_address,
+                              logger_name=logger_name)
 
 
 def test_parse_default():
