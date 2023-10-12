@@ -4,14 +4,6 @@ Run a socket server for application logging.
 Implemented as a CLI. Receives pickled LogRecord objects over a socket, 
 buffers them, and handles them according to application requirements.
 
-
-<p align="center">
-<p align="center">
-<a href="https://pypi.org/project/fastapi" target="_blank">
-    <img src="https://img.shields.io/pypi/pyversions/fastapi.svg?color=%2334D058" alt="Supported Python versions">
-</a>
-</p>
-
 ## Installation
 
 ```shell
